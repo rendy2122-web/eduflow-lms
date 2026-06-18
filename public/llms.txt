@@ -1,0 +1,14 @@
+# EduFlow - Integrated School Operations & LMS
+
+EduFlow is an all-in-one SaaS web application that integrates learning management (LMS) with daily school operations, finance tracking, staff attendance, and parent monitoring.
+
+## System Overview
+- **Type:** Responsive Web Application (SaaS Dashboard)
+- **Tech Stack:** Next.js 14, React 18, Prisma ORM, SQLite Database
+- **Target Audience:** School Administrators, Teachers, Students, and Parents
+
+## Core Modules & Features
+- **Admin Dashboard:** Manage users, teachers, classes, and view cashflow logs (incoming/outgoing funds) and staff attendance.
+- **Guru Dashboard:** Upload materials, assign tasks, manage student attendance grids, and input Tahfidz Quran memorization records.
+- **Siswa Dashboard:** Download study files, submit class assignments digitally, track personal attendance rate, and monitor Quran memorization progress.
+- **Orang Tua Dashboard:** Select child profile, monitor child's daily presence, track pending homework, inspect academic scores, and read Tahfidz logs with teachers' feedback.

@@ -1,0 +1,41 @@
+# Node dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js build output
+.next/
+out/
+
+# Production build
+build/
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vercel deployment
+.vercel
+
+# Database
+/prisma/dev.db
+/prisma/dev.db-journal
+*.db
+/prisma/tenants/
+
+# Scratch files
+scratch-*.js
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Test uploads
+/public/submissions/

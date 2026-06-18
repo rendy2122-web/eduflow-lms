@@ -1,0 +1,164 @@
+{
+  "milestones": [
+    {
+      "id": "m_math1_1",
+      "title": "Bab 1: Mengenal Bilangan 1-20",
+      "subject": "Matematika 1",
+      "completed": true,
+      "studentId": "default-student-id"
+    },
+    {
+      "id": "m_math1_2",
+      "title": "Bab 2: Penjumlahan Sederhana",
+      "subject": "Matematika 1",
+      "completed": true,
+      "studentId": "default-student-id"
+    },
+    {
+      "id": "m_math1_3",
+      "title": "Bab 3: Pengenalan Bangun Datar",
+      "subject": "Matematika 1",
+      "completed": true,
+      "studentId": "default-student-id"
+    },
+    {
+      "id": "m_ind1_1",
+      "title": "Bab 1: Membaca Suku Kata",
+      "subject": "Bahasa Indonesia 1",
+      "completed": true,
+      "studentId": "default-student-id"
+    },
+    {
+      "id": "m_ind1_2",
+      "title": "Bab 2: Menulis Huruf Tegak Bersambung",
+      "subject": "Bahasa Indonesia 1",
+      "completed": true,
+      "studentId": "default-student-id"
+    },
+    {
+      "id": "m_math2_1",
+      "title": "Bab 1: Perkalian Dasar",
+      "subject": "Matematika 2",
+      "completed": true,
+      "studentId": "default-student-id"
+    },
+    {
+      "id": "m_isl2_1",
+      "title": "Bab 1: Mengenal Rukun Iman",
+      "subject": "Agama Islam 2",
+      "completed": true,
+      "studentId": "default-student-id"
+    },
+    {
+      "id": "m_math3_1",
+      "title": "Bab 1: Pembagian & Pecahan",
+      "subject": "Matematika 3",
+      "completed": true,
+      "studentId": "default-student-id"
+    },
+    {
+      "id": "m_sci3_1",
+      "title": "Bab 1: Ciri-ciri Makhluk Hidup",
+      "subject": "IPA 3",
+      "completed": true,
+      "studentId": "default-student-id"
+    },
+    {
+      "id": "m_math4_1",
+      "title": "Bab 1: Pecahan Desimal",
+      "subject": "Matematika 4",
+      "completed": true,
+      "studentId": "default-student-id"
+    },
+    {
+      "id": "m_soc4_1",
+      "title": "Bab 1: Peta & Lingkungan Lokal",
+      "subject": "IPS 4",
+      "completed": true,
+      "studentId": "default-student-id"
+    },
+    {
+      "id": "m_math5_1",
+      "title": "Bab 1: Volume Bangun Ruang",
+      "subject": "Matematika 5",
+      "completed": true,
+      "studentId": "default-student-id"
+    },
+    {
+      "id": "m_math5_2",
+      "title": "Bab 2: Pengolahan Data Sederhana",
+      "subject": "Matematika 5",
+      "completed": true,
+      "studentId": "default-student-id"
+    },
+    {
+      "id": "m_sci5_1",
+      "title": "Bab 1: Fotosintesis & Rantai Makanan",
+      "subject": "IPAS 5",
+      "completed": true,
+      "studentId": "default-student-id"
+    },
+    {
+      "id": "m_sci5_2",
+      "title": "Bab 2: Sistem Organ Manusia",
+      "subject": "IPAS 5",
+      "completed": true,
+      "studentId": "default-student-id"
+    },
+    {
+      "id": "m_ind5_1",
+      "title": "Bab 1: Membaca Teks Eksplanasi",
+      "subject": "Bahasa Indonesia 5",
+      "completed": true,
+      "studentId": "default-student-id"
+    },
+    {
+      "id": "m_math6_1",
+      "title": "Bab 1: Operasi Hitung Campuran",
+      "subject": "Matematika 6",
+      "completed": true,
+      "studentId": "default-student-id"
+    },
+    {
+      "id": "m_sci6_1",
+      "title": "Bab 1: Energi & Perubahannya",
+      "subject": "IPA 6",
+      "completed": true,
+      "studentId": "default-student-id"
+    }
+  ],
+  "portfolios": [
+    {
+      "id": "p1",
+      "title": "Kunjungan Sejarah ke Museum Nasional",
+      "subject": "IPS 4",
+      "notes": "Belajar tentang peninggalan prasasti kuno Kerajaan Tarumanegara dan mengamati arsitektur candi mini.",
+      "fileUrl": "/submissions/mock_museum_visit.pdf",
+      "studentId": "default-student-id",
+      "studentName": "Bilal Al-Mansoori",
+      "parentId": "default-parent-id",
+      "date": "2026-06-11",
+      "status": "graded",
+      "academicScore": 95,
+      "teacherFeedback": "Ulasan yang sangat mendalam! Bilal mampu mengidentifikasi nama prasasti dengan tepat.",
+      "adabScore": 90,
+      "created_at": "2026-06-11T08:30:00.000Z"
+    },
+    {
+      "id": "p2",
+      "title": "Praktikum Fotosintesis Daun Hijau",
+      "subject": "IPAS 5",
+      "notes": "Melakukan uji Sachs pada daun singkong untuk membuktikan pembentukan amilum oleh fotosintesis.",
+      "fileUrl": "/submissions/mock_sachs_test.pdf",
+      "studentId": "default-student-id",
+      "studentName": "Bilal Al-Mansoori",
+      "parentId": "default-parent-id",
+      "date": "2026-06-10",
+      "status": "graded",
+      "academicScore": 98,
+      "teacherFeedback": "Eksperimen yang luar biasa, dokumentasi foto daun sangat jelas dan laporan analisisnya sistematis.",
+      "adabScore": 95,
+      "created_at": "2026-06-10T09:15:00.000Z"
+    }
+  ]
+}

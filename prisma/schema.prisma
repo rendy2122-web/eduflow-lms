@@ -1,0 +1,299 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// 1. Akun Login & Profil Utama
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  password_hash String
+  role          String    // 'admin', 'guru', 'siswa', 'orang_tua'
+  nama          String
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+
+  // Relasi
+  profile              Profile?
+  staffAttendances     StaffAttendance[]
+  studentAttendances   StudentAttendance[]
+  submissions          Submission[]
+  subjectsTaught       Subject[]
+  financesCreated      Finance[]
+  examAttempts         ExamAttempt[]
+  habitLogs            HabitLog[]
+  
+  // Relasi Tahfidz ganda (sebagai penyimak/guru, dan sebagai penghafal/siswa)
+  tahfidzRecordsStudent TahfidzRecord[] @relation("StudentTahfidz")
+  tahfidzRecordsTeacher TahfidzRecord[] @relation("TeacherTahfidz")
+}
+
+// 2. Data Tambahan Berdasarkan Peran
+model Profile {
+  id          String   @id @default(uuid())
+  user_id     String   @unique
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  parent_id   String?  // Menghubungkan Siswa ke Orang Tua
+  class_id    String?  // Menghubungkan Siswa ke Kelas
+  class       Class?   @relation(fields: [class_id], references: [id])
+  nisn_or_nip String?  @unique
+  alamat      String?
+  telepon     String?
+  catatan_wali String?
+  avatar_url   String?
+  
+  // Gamifikasi RPG
+  rpg_level   Int      @default(1)
+  rpg_xp      Int      @default(0)
+  rpg_gold    Int      @default(50)
+  rpg_items   String   @default("[]")
+  rpg_equipped String  @default("[]")
+}
+
+// 3. Kelas Belajar
+model Class {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  description String?
+  profiles    Profile[]
+  subjects    Subject[]
+}
+
+// 4. Mata Pelajaran
+model Subject {
+  id         String     @id @default(uuid())
+  name       String
+  code       String
+  class_id   String
+  class      Class      @relation(fields: [class_id], references: [id], onDelete: Cascade)
+  teacher_id String
+  teacher    User       @relation(fields: [teacher_id], references: [id], onDelete: Cascade)
+  materials  Material[]
+  tasks      Task[]
+  exams      Exam[]
+}
+
+// 5. Materi Pembelajaran (Unduh PDF/Video)
+model Material {
+  id         String   @id @default(uuid())
+  subject_id String
+  subject    Subject  @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+  title      String
+  description String
+  file_url   String
+  created_at DateTime @default(now())
+}
+
+// 6. Tugas
+model Task {
+  id          String       @id @default(uuid())
+  subject_id  String
+  subject     Subject      @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  deadline    DateTime
+  submissions Submission[]
+}
+
+// 7. Pengumpulan Tugas Siswa
+model Submission {
+  id         String    @id @default(uuid())
+  task_id    String
+  task       Task      @relation(fields: [task_id], references: [id], onDelete: Cascade)
+  student_id String
+  student    User      @relation(fields: [student_id], references: [id], onDelete: Cascade)
+  file_url   String
+  score      Int?      // Nilai dari Guru (0-100)
+  graded_at  DateTime?
+  created_at DateTime  @default(now())
+}
+
+// 8. Kehadiran Murid Harian (Diisi oleh Guru)
+model StudentAttendance {
+  id         String   @id @default(uuid())
+  student_id String
+  student    User     @relation(fields: [student_id], references: [id], onDelete: Cascade)
+  date       String   // Format: YYYY-MM-DD
+  status     String   // 'hadir', 'sakit', 'izin', 'alpa'
+  notes      String?
+}
+
+// 9. Kehadiran Guru & Staf Harian (Clock In / Clock Out)
+model StaffAttendance {
+  id        String    @id @default(uuid())
+  staff_id  String
+  staff     User      @relation(fields: [staff_id], references: [id], onDelete: Cascade)
+  date      String    // Format: YYYY-MM-DD
+  clock_in  DateTime?
+  clock_out DateTime?
+  status    String    // 'hadir', 'izin', 'alpa'
+}
+
+// 10. Jurnal Setoran Hafalan Qur'an (Tahfidz)
+model TahfidzRecord {
+  id          String   @id @default(uuid())
+  student_id  String
+  student     User     @relation("StudentTahfidz", fields: [student_id], references: [id], onDelete: Cascade)
+  teacher_id  String
+  teacher     User     @relation("TeacherTahfidz", fields: [teacher_id], references: [id], onDelete: Cascade)
+  date        String   // Format: YYYY-MM-DD
+  surah_name  String
+  start_ayat  Int
+  end_ayat    Int
+  category    String   @default("ziyadah") // 'ziyadah', 'sabqi', 'manzil', 'murajaah'
+  status      String   // 'lancar', 'kurang_lancar', 'perlu_diulang'
+  notes       String?
+}
+
+// 11. Pembukuan Jurnal Keuangan Kas
+model Finance {
+  id          String   @id @default(uuid())
+  type        String   // 'masuk', 'keluar'
+  amount      Float    // Menggunakan Float untuk SQLite (pengganti Decimal)
+  category    String   // 'spp', 'donasi', 'gaji', 'operasional', 'listrik', dll
+  description String
+  date        String   // Format: YYYY-MM-DD
+  created_by  String
+  creator     User     @relation(fields: [created_by], references: [id], onDelete: Cascade)
+  created_at  DateTime @default(now())
+}
+
+// 12. Buku Penghubung & Konsultasi Chat Guru-Ortu
+model CommunicationLog {
+  id          String   @id @default(uuid())
+  student_id  String
+  sender_role String   // 'guru', 'orang_tua'
+  sender_name String
+  message     String
+  date        String   // Format: YYYY-MM-DD
+  created_at  DateTime @default(now())
+}
+
+// 13. Pengumuman Sekolah
+model Announcement {
+  id          String   @id @default(uuid())
+  title       String
+  content     String
+  category    String   // 'akademik', 'kegiatan', 'informasi', 'urgen'
+  target      String   // 'semua', 'guru', 'siswa', 'orang_tua'
+  author_name String
+  author_role String   // 'admin', 'guru'
+  created_at  DateTime @default(now())
+}
+
+// 14. Modul 10: Kuis dan Ujian Online
+model Exam {
+  id          String         @id @default(uuid())
+  subject_id  String
+  subject     Subject        @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  duration    Int            // Durasi pengerjaan dalam menit
+  deadline    DateTime       // Batas akhir pengerjaan
+  created_at  DateTime       @default(now())
+  
+  questions   ExamQuestion[]
+  attempts    ExamAttempt[]
+}
+
+model ExamQuestion {
+  id             String   @id @default(uuid())
+  exam_id        String
+  exam           Exam     @relation(fields: [exam_id], references: [id], onDelete: Cascade)
+  question_text  String
+  options        String   // Serialized JSON array: ["Opsi A", "Opsi B", "Opsi C", "Opsi D"]
+  correct_option String   // Pilihan yang benar: 'A' | 'B' | 'C' | 'D'
+}
+
+model ExamAttempt {
+  id           String    @id @default(uuid())
+  exam_id      String
+  exam         Exam      @relation(fields: [exam_id], references: [id], onDelete: Cascade)
+  student_id   String
+  student      User      @relation(fields: [student_id], references: [id], onDelete: Cascade)
+  score        Int?      // Skor otomatis terhitung (0 - 100)
+  answers      String    // Serialized JSON map dari jawaban siswa: {"soal_id": "A"}
+  started_at   DateTime  @default(now())
+  submitted_at DateTime?
+}
+
+// 15. Modul 11: Habit Tracker (Mutaba'ah Yaumiyah)
+model HabitLog {
+  id               String   @id @default(uuid())
+  student_id       String
+  student          User     @relation(fields: [student_id], references: [id], onDelete: Cascade)
+  date             String   // Format: YYYY-MM-DD
+  
+  // Status Shalat 5 Waktu: 'masjid' (Masjid), 'rumah' (Rumah), 'lewat' (Tidak)
+  subuh            String   @default("lewat")
+  dzuhur           String   @default("lewat")
+  ashar            String   @default("lewat")
+  maghrib          String   @default("lewat")
+  isya             String   @default("lewat")
+  
+  // Amalan Sunnah & Karakter Harian (Boolean)
+  duha             Boolean  @default(false)
+  tahajjud         Boolean  @default(false)
+  tadarrus         Boolean  @default(false)
+  birrul_walidain  Boolean  @default(false) // Membantu Orang Tua
+  belajar          Boolean  @default(false) // Belajar Mandiri
+  
+  // Verifikasi Orang Tua
+  verified         Boolean  @default(false)
+  created_at       DateTime @default(now())
+  
+  @@unique([student_id, date]) // Mencegah double entry pada tanggal yang sama
+}
+
+// 16. SaaS Management Models (Central Control DB)
+model Tenant {
+  id           String   @id @default(uuid())
+  name         String   // School Name
+  pathSegment  String   @unique // e.g., "smp1jkt" for eduflow.com/smp1jkt
+  dbFilePath   String   // File path to isolated SQLite file (e.g., "prisma/tenants/smp1jkt.db")
+  status       String   // "ACTIVE" | "SUSPENDED" | "TRIAL"
+  created_at   DateTime @default(now())
+
+  subscription Subscription?
+  billingLogs  BillingLog[]
+}
+
+model Subscription {
+  id         String   @id @default(uuid())
+  tenantId   String   @unique
+  tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  plan       String   // "FREE" | "BASIC" | "PREMIUM"
+  expiresAt  DateTime
+  maxUsers   Int      @default(100)
+}
+
+model BillingLog {
+  id                String   @id @default(uuid())
+  tenantId          String
+  tenant            Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  orderId           String   @unique
+  amount            Float
+  transactionStatus String
+  paymentType       String
+  updatedAt         DateTime @default(now())
+}
+
+model OnlineClass {
+  id           String   @id @default(uuid())
+  title        String
+  date         String   // Format: YYYY-MM-DD
+  time         String   // Format: HH:MM - HH:MM
+  platform     String   // 'gmeet' | 'zoom'
+  link         String
+  class_name   String
+  subject_name String
+  notes        String?
+  created_at   DateTime @default(now())
+}
+
+
+
