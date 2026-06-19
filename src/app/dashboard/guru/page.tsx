@@ -61,42 +61,52 @@ export default function GuruDashboardPage() {
     explanation: "Betul! Rukun Islam kedua adalah mendirikan shalat lima waktu."
   };
 
-  const getDynamicSchedule = () => {
-    const now = new Date();
-    const currentHour = now.getHours();
-    
-    const formatTime = (h: number, m: number) => {
-      const paddedH = String(h % 24).padStart(2, '0');
-      const paddedM = String(m).padStart(2, '0');
-      return `${paddedH}:${paddedM}`;
-    };
+  const [todaySchedule, setTodaySchedule] = useState<any[]>([]);
 
-    return [
-      {
-        time: `${formatTime(currentHour - 2, 30)} - ${formatTime(currentHour - 1, 0)}`,
-        subject: 'Matematika Aljabar',
-        class: 'Grade 4A',
-        room: 'R. Belajar 1',
-        isLive: false
-      },
-      {
-        time: `${formatTime(currentHour, 0)} - ${formatTime(currentHour + 1, 30)}`,
-        subject: 'Pendidikan Agama Islam',
-        class: 'Grade 4B',
-        room: 'R. Belajar 2',
-        isLive: true
-      },
-      {
-        time: `${formatTime(currentHour + 2, 0)} - ${formatTime(currentHour + 3, 30)}`,
-        subject: 'Tahfidz Al-Qur\'an',
-        class: 'Grade 4A',
-        room: 'Musholla',
-        isLive: false
-      }
-    ];
+  const isTimeInRange = (timeRange: string) => {
+    const now = new Date();
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    
+    const [start, end] = timeRange.split(' - ');
+    const [startH, startM] = start.split(':').map(Number);
+    const [endH, endM] = end.split(':').map(Number);
+    
+    const startMinutes = startH * 60 + startM;
+    const endMinutes = endH * 60 + endM;
+    
+    return currentMinutes >= startMinutes && currentMinutes <= endMinutes;
   };
 
-  const agendaJadwal = getDynamicSchedule();
+  const getTodaySchedule = () => {
+    const today = new Date().toISOString().split('T')[0];
+    return todaySchedule
+      .filter((item: any) => item.date === today)
+      .sort((a: any, b: any) => a.time.localeCompare(b.time));
+  };
+
+  const agendaJadwal = getTodaySchedule().length > 0 ? getTodaySchedule() : [
+    {
+      time: '17:30 - 18:00',
+      subject: 'Matematika Aljabar',
+      class: 'Grade 4A',
+      room: 'R. Belajar 1',
+      isLive: false
+    },
+    {
+      time: '19:00 - 20:30',
+      subject: 'Pendidikan Agama Islam',
+      class: 'Grade 4B',
+      room: 'R. Belajar 2',
+      isLive: true
+    },
+    {
+      time: '21:00 - 22:30',
+      subject: 'Tahfidz Al-Qur\'an',
+      class: 'Grade 4A',
+      room: 'Musholla',
+      isLive: false
+    }
+  ];
 
   const pengumumanList = [
     { title: 'Persiapan Ujian Akhir Semester', date: 'Ditulis 1 hari yang lalu', category: 'Akademik', color: '#3b82f6', bgColor: '#eff6ff' },
@@ -123,6 +133,13 @@ export default function GuruDashboardPage() {
       // Fetch tahfidz records
       const tahfidzRes = await fetch('/api/guru/tahfidz');
       const tahfidzJson = await tahfidzRes.json();
+
+      // Fetch today's schedule
+      const scheduleRes = await fetch('/api/guru/online-class');
+      const scheduleJson = await scheduleRes.json();
+      if (scheduleJson.success) {
+        setTodaySchedule(scheduleJson.classes);
+      }
 
       if (attendanceJson.success) {
         setStudents(attendanceJson.students);
@@ -1198,12 +1215,12 @@ export default function GuruDashboardPage() {
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
               <h3 style={{ fontSize: '0.9rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>Jadwal Mengajar Hari Ini</h3>
-              <span style={{ fontSize: '0.68rem', color: '#4f46e5', fontWeight: 700 }}>3 Sesi Aktif</span>
+                  <span style={{ fontSize: '0.68rem', color: '#4f46e5', fontWeight: 700 }}>{agendaJadwal.length} Sesi Aktif</span>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', position: 'relative', paddingLeft: '12px', borderLeft: '2px dashed #cbd5e1' }}>
               {agendaJadwal.map((agenda, idx) => {
-                const isLive = agenda.isLive;
+                const isLive = isTimeInRange(agenda.time);
                 return (
                   <div 
                     key={idx} 
