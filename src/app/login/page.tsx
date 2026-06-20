@@ -11,14 +11,11 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [isTenantAutoDetected, setIsTenantAutoDetected] = useState(false);
-
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const segments = window.location.pathname.split('/').filter(Boolean);
       if (segments.length > 0 && segments[0] !== 'login' && segments[0] !== 'api' && segments[0] !== 'saas-admin') {
         setTenantId(segments[0]);
-        setIsTenantAutoDetected(true);
       }
     }
   }, []);
@@ -97,7 +94,7 @@ export default function LoginPage() {
             color: '#94a3b8',
             margin: 0
           }}>
-            Masukkan kredensial sekolah {tenantId ? <strong style={{ color: '#38bdf8' }}>{tenantId}</strong> : ''} Anda
+            Masukkan kredensial akun Anda
           </p>
         </div>
 
@@ -117,49 +114,6 @@ export default function LoginPage() {
         )}
 
         <form onSubmit={handleLogin} id="login-form">
-          {/* Kode Sekolah (Tenant ID) Input */}
-          <div className="form-group" style={{ marginBottom: '16px' }}>
-            <label className="form-label" htmlFor="login-tenant" style={{ display: 'block', fontSize: '13px', color: '#cbd5e1', marginBottom: '6px' }}>
-              Kode Sekolah (Tenant ID)
-            </label>
-            <div style={{ position: 'relative' }}>
-              <input
-                type="text"
-                id="login-tenant"
-                className="form-control"
-                placeholder="Contoh: sdn01menteng"
-                required
-                disabled={isTenantAutoDetected}
-                value={tenantId}
-                onChange={(e) => setTenantId(e.target.value.trim().toLowerCase())}
-                style={{
-                  width: '100%',
-                  padding: '10px 14px',
-                  background: isTenantAutoDetected ? 'rgba(15, 23, 42, 0.8)' : 'rgba(15, 23, 42, 0.5)',
-                  border: isTenantAutoDetected ? '1px solid rgba(16, 185, 129, 0.5)' : '1px solid rgba(255, 255, 255, 0.15)',
-                  borderRadius: '8px',
-                  color: isTenantAutoDetected ? '#10b981' : '#fff',
-                  fontWeight: isTenantAutoDetected ? 700 : 400,
-                  outline: 'none',
-                  cursor: isTenantAutoDetected ? 'not-allowed' : 'text'
-                }}
-              />
-              {isTenantAutoDetected && (
-                <span style={{
-                  position: 'absolute',
-                  right: '12px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  color: '#10b981',
-                  fontSize: '11px',
-                  fontWeight: 'bold'
-                }}>
-                  ✓ Terverifikasi
-                </span>
-              )}
-            </div>
-          </div>
-
           <div className="form-group" style={{ marginBottom: '16px' }}>
             <label className="form-label" htmlFor="login-email" style={{ display: 'block', fontSize: '13px', color: '#cbd5e1', marginBottom: '6px' }}>Email</label>
             <input
