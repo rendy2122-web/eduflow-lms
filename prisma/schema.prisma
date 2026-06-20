@@ -30,6 +30,7 @@ model User {
   // Relasi Tahfidz ganda (sebagai penyimak/guru, dan sebagai penghafal/siswa)
   tahfidzRecordsStudent TahfidzRecord[] @relation("StudentTahfidz")
   tahfidzRecordsTeacher TahfidzRecord[] @relation("TeacherTahfidz")
+  teachingSchedules TeachingSchedule[]
 }
 
 // 2. Data Tambahan Berdasarkan Peran
@@ -61,6 +62,7 @@ model Class {
   description String?
   profiles    Profile[]
   subjects    Subject[]
+  teachingSchedules TeachingSchedule[]
 }
 
 // 4. Mata Pelajaran
@@ -292,7 +294,26 @@ model OnlineClass {
   class_name   String
   subject_name String
   notes        String?
-  created_at   DateTime @default(now())
+  created_at   DateTime  @default(now())
+}
+
+// 17. Jadwal Mengajar Tetap (Mingguan)
+model TeachingSchedule {
+  id           String    @id @default(uuid())
+  teacher_id   String
+  teacher      User       @relation(fields: [teacher_id], references: [id], onDelete: Cascade)
+  class_id     String
+  class        Class      @relation(fields: [class_id], references: [id], onDelete: Cascade)
+  subject_id   String
+  subject      Subject    @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+  day_of_week  String     // 'SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT', 'SABTU', 'AHAD'
+  start_time   String     // Format: "07:00"
+  end_time     String     // Format: "08:30"
+  room         String?    // Opsional: "Ruang 101"
+  created_at   DateTime   @default(now())
+  updated_at   DateTime   @updatedAt
+
+  @@unique([teacher_id, class_id, subject_id, day_of_week, start_time])
 }
 
 
