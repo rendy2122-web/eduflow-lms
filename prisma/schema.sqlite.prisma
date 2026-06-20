@@ -1,4 +1,4 @@
- datasource db {
+datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
@@ -159,7 +159,7 @@ model Finance {
   date        String   // Format: YYYY-MM-DD
   created_by  String
   creator     User     @relation(fields: [created_by], references: [id], onDelete: Cascade)
-  created_at  DateTime @default(now())
+  created_at  DateTime  @default(now())
 }
 
 // 12. Buku Penghubung & Konsultasi Chat Guru-Ortu
@@ -170,7 +170,7 @@ model CommunicationLog {
   sender_name String
   message     String
   date        String   // Format: YYYY-MM-DD
-  created_at  DateTime @default(now())
+  created_at  DateTime  @default(now())
 }
 
 // 13. Pengumuman Sekolah
@@ -182,7 +182,7 @@ model Announcement {
   target      String   // 'semua', 'guru', 'siswa', 'orang_tua'
   author_name String
   author_role String   // 'admin', 'guru'
-  created_at  DateTime @default(now())
+  created_at  DateTime  @default(now())
 }
 
 // 14. Modul 10: Kuis dan Ujian Online
@@ -244,7 +244,7 @@ model HabitLog {
   
   // Verifikasi Orang Tua
   verified         Boolean  @default(false)
-  created_at       DateTime @default(now())
+  created_at       DateTime  @default(now())
   
   @@unique([student_id, date]) // Mencegah double entry pada tanggal yang sama
 }
@@ -256,7 +256,7 @@ model Tenant {
   pathSegment  String   @unique // e.g., "smp1jkt" for eduflow.com/smp1jkt
   dbFilePath   String   // File path to isolated SQLite file (e.g., "prisma/tenants/smp1jkt.db")
   status       String   // "ACTIVE" | "SUSPENDED" | "TRIAL"
-  created_at   DateTime @default(now())
+  created_at   DateTime  @default(now())
 
   subscription Subscription?
   billingLogs  BillingLog[]
@@ -279,7 +279,7 @@ model BillingLog {
   amount            Float
   transactionStatus String
   paymentType       String
-  updatedAt         DateTime @default(now())
+  updatedAt         DateTime  @default(now())
 }
 
 model OnlineClass {
@@ -292,8 +292,5 @@ model OnlineClass {
   class_name   String
   subject_name String
   notes        String?
-  created_at   DateTime @default(now())
+  created_at   DateTime  @default(now())
 }
-
-
-

@@ -1,20 +1,17 @@
 import { PrismaClient } from '@prisma/client';
 import { headers } from 'next/headers';
 
+// Simple client untuk development (SQLite)
 const clients: Record<string, PrismaClient> = {};
 
 export function getTenantDbUrl(tenantId: string): string {
-  // For PostgreSQL (Supabase), use the main DATABASE_URL for all tenants
-  // Multi-tenancy will be handled at application level with tenant_id columns
   const baseDir = process.cwd().replace(/\\/g, '/');
   
   if (tenantId === 'control' || tenantId === 'saas-admin') {
-    return process.env.DATABASE_URL || `file:${baseDir}/prisma/control.db`;
+    return `file:${baseDir}/prisma/control.db`;
   }
   
-  // For PostgreSQL, return the main DATABASE_URL
-  // The application will filter by tenant_id in queries
-  return process.env.DATABASE_URL || `file:${baseDir}/prisma/tenants/${tenantId}.db`;
+  return `file:${baseDir}/prisma/tenants/${tenantId}.db`;
 }
 
 export function getPrismaClient(dbUrl: string): PrismaClient {
@@ -26,7 +23,6 @@ export function getPrismaClient(dbUrl: string): PrismaClient {
         },
       },
     });
-
     clients[dbUrl] = client;
   }
   return clients[dbUrl];
@@ -46,10 +42,11 @@ export function getActivePrisma(): PrismaClient {
   }
   
   const defaultUrl = process.env.DATABASE_URL || `file:${process.cwd().replace(/\\/g, '/')}/prisma/dev.db`;
-  console.log(`[getActivePrisma] Fallback to defaultUrl: "${defaultUrl}"`);
+  console.log(`[getActivePrisma] Fallback to: "${defaultUrl}"`);
   return getPrismaClient(defaultUrl);
 }
 
+// Export default prisma untuk kompatibilitas
 export const prisma = new Proxy({} as PrismaClient, {
   get(target, prop, receiver) {
     const activeClient = getActivePrisma();
