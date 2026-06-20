@@ -547,47 +547,42 @@ export default function GuruClassesPage() {
               </div>
               <div style={{ display: 'flex', gap: '8px' }}>
                 <button
-                  onClick={() => setShowClassModal(true)}
+                  disabled
                   style={{
-                    backgroundColor: '#eff6ff',
-                    border: '1px solid #bfdbfe',
-                    color: '#2563eb',
+                    backgroundColor: '#f1f5f9',
+                    border: '1px solid #e2e8f0',
+                    color: '#94a3b8',
                     fontSize: '0.72rem',
-                    fontWeight: 800,
+                    fontWeight: 600,
                     padding: '6px 12px',
                     borderRadius: '8px',
-                    cursor: 'pointer',
+                    cursor: 'not-allowed',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '4px'
                   }}
-                  className="btn-hover-active"
+                  title="Hanya Admin yang bisa menambah kelas"
                 >
-                  + Tambah Kelas
+                  🔒 Tambah Kelas (Admin)
                 </button>
                 <button
-                  onClick={() => {
-                    if (classes.length > 0) {
-                      setNewSubjClassId(classes[0].id);
-                    }
-                    setShowSubjectModal(true);
-                  }}
+                  disabled
                   style={{
-                    backgroundColor: '#f5f3ff',
-                    border: '1px solid #ddd6fe',
-                    color: '#7c3aed',
+                    backgroundColor: '#f1f5f9',
+                    border: '1px solid #e2e8f0',
+                    color: '#94a3b8',
                     fontSize: '0.72rem',
-                    fontWeight: 800,
+                    fontWeight: 600,
                     padding: '6px 12px',
                     borderRadius: '8px',
-                    cursor: 'pointer',
+                    cursor: 'not-allowed',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '4px'
                   }}
-                  className="btn-hover-active"
+                  title="Hanya Admin yang bisa menambah mapel"
                 >
-                  + Tambah Mapel
+                  🔒 Tambah Mapel (Admin)
                 </button>
               </div>
             </div>
