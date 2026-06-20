@@ -20,28 +20,40 @@ export async function GET(request: NextRequest) {
       where.day_of_week = dayOfWeek;
     }
 
-    const schedules = await prisma.teachingSchedule.findMany({
-      where,
-      include: {
-        class: {
-          select: {
-            id: true,
-            name: true
+    let schedules = [];
+    try {
+      schedules = await prisma.teachingSchedule.findMany({
+        where,
+        include: {
+          class: {
+            select: {
+              id: true,
+              name: true
+            }
+          },
+          subject: {
+            select: {
+              id: true,
+              name: true,
+              code: true
+            }
           }
         },
-        subject: {
-          select: {
-            id: true,
-            name: true,
-            code: true
-          }
-        }
-      },
-      orderBy: [
-        { day_of_week: 'asc' },
-        { start_time: 'asc' }
-      ]
-    });
+        orderBy: [
+          { day_of_week: 'asc' },
+          { start_time: 'asc' }
+        ]
+      });
+    } catch (tableError: any) {
+      if (tableError.code === 'P2021') {
+        console.log('TeachingSchedule table does not exist yet');
+        return NextResponse.json({
+          success: true,
+          schedules: []
+        });
+      }
+      throw tableError;
+    }
 
     return NextResponse.json({
       success: true,
