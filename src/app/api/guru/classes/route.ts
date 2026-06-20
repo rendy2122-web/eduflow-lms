@@ -50,8 +50,7 @@ export async function GET(request: NextRequest) {
             select: {
               id: true,
               nama: true,
-              email: true,
-              avatar_url: true
+              email: true
             }
           }
         }
@@ -61,7 +60,7 @@ export async function GET(request: NextRequest) {
         id: s.user.id,
         name: s.user.nama,
         email: s.user.email,
-        avatar: s.user.avatar_url || '',
+        avatar: '',
         presenceRate: 0,
         tasksPending: 0
       }));
