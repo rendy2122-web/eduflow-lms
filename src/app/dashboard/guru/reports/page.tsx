@@ -116,7 +116,7 @@ export default function GuruReportsPage() {
     <DashboardLayout 
       activeMenu="reports" 
       pageTitle="Rapor Digital" 
-      pageSubtitle="Generate dan kelola rapor siswa dalam format digital"
+      pageSubtitle="Lihat statistik nilai, filter berdasarkan kelas/siswa, dan cetak laporan lengkap dalam format digital"
     >
       {/* Print-specific styles */}
       <style jsx global>{`
