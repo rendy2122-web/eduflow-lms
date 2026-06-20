@@ -935,10 +935,60 @@ export default function AdminClassesPage() {
               </div>
             </div>
 
-            {/* Subjects List */}
+            {/* Homeroom Teacher Assignment */}
             <div style={{ marginBottom: '20px' }}>
               <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', margin: '0 0 12px 0' }}>
-                Mata Pelajaran di Kelas Ini
+                Wali Kelas
+              </h3>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <select
+                  value={selectedClass.profiles?.[0]?.user?.id || ''}
+                  onChange={async (e) => {
+                    const teacherId = e.target.value;
+                    if (!teacherId) return;
+                    try {
+                      const res = await fetch('/api/admin/classes/assign-homeroom', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          classId: selectedClass.id,
+                          teacherId
+                        })
+                      });
+                      const json = await res.json();
+                      if (json.success) {
+                        alert('Wali kelas berhasil ditugaskan!');
+                        fetchClasses();
+                      } else {
+                        alert('Gagal: ' + json.error);
+                      }
+                    } catch (err) {
+                      alert('Gagal menghubungi server');
+                    }
+                  }}
+                  style={{
+                    flex: 1,
+                    padding: '8px 12px',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '8px',
+                    fontSize: '0.85rem',
+                    backgroundColor: '#ffffff'
+                  }}
+                >
+                  <option value="">-- Pilih Wali Kelas --</option>
+                  {teachers.map((teacher) => (
+                    <option key={teacher.id} value={teacher.id}>
+                      {teacher.nama} ({teacher.email})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Subjects List with Teacher Assignment */}
+            <div style={{ marginBottom: '20px' }}>
+              <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', margin: '0 0 12px 0' }}>
+                Mata Pelajaran & Guru Pengampu
               </h3>
               {!selectedClass.subjects || selectedClass.subjects.length === 0 ? (
                 <p style={{ fontSize: '0.85rem', color: '#64748b', fontStyle: 'italic' }}>
@@ -951,14 +1001,59 @@ export default function AdminClassesPage() {
                       padding: '12px',
                       background: '#f8fafc',
                       borderRadius: '8px',
-                      border: '1px solid #e2e8f0'
+                      border: '1px solid #e2e8f0',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
                     }}>
-                      <p style={{ fontSize: '0.9rem', fontWeight: 600, color: '#0f172a', margin: '0 0 4px 0' }}>
-                        {subject.name}
-                      </p>
-                      <p style={{ fontSize: '0.75rem', color: '#64748b', margin: 0 }}>
-                        {subject.code} • {subject.teacher?.nama || 'Belum ada guru'}
-                      </p>
+                      <div style={{ flex: 1 }}>
+                        <p style={{ fontSize: '0.9rem', fontWeight: 600, color: '#0f172a', margin: '0 0 4px 0' }}>
+                          {subject.name}
+                        </p>
+                        <p style={{ fontSize: '0.75rem', color: '#64748b', margin: 0 }}>
+                          {subject.code}
+                        </p>
+                      </div>
+                      <select
+                        value={subject.teacher_id || ''}
+                        onChange={async (e) => {
+                          const teacherId = e.target.value;
+                          try {
+                            const res = await fetch('/api/admin/subjects/assign-teacher', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({
+                                subjectId: subject.id,
+                                teacherId
+                              })
+                            });
+                            const json = await res.json();
+                            if (json.success) {
+                              alert('Guru berhasil ditugaskan!');
+                              fetchClasses();
+                            } else {
+                              alert('Gagal: ' + json.error);
+                            }
+                          } catch (err) {
+                            alert('Gagal menghubungi server');
+                          }
+                        }}
+                        style={{
+                          padding: '6px 10px',
+                          border: '1px solid #e2e8f0',
+                          borderRadius: '6px',
+                          fontSize: '0.75rem',
+                          backgroundColor: '#ffffff',
+                          minWidth: '180px'
+                        }}
+                      >
+                        <option value="">-- Pilih Guru --</option>
+                        {teachers.map((teacher) => (
+                          <option key={teacher.id} value={teacher.id}>
+                            {teacher.nama}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   ))}
                 </div>
