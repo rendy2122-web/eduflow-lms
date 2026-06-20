@@ -81,8 +81,8 @@ export default function TeachingSchedulePage() {
   const fetchClassesAndSubjects = useCallback(async () => {
     try {
       const [classesRes, subjectsRes] = await Promise.all([
-        fetch('/api/guru/classes'),
-        fetch('/api/guru/subjects')
+        fetch(`/api/guru/classes?teacherId=${teacherId}`),
+        fetch(`/api/guru/subjects?teacherId=${teacherId}`)
       ]);
 
       const classesJson = await classesRes.json();
@@ -97,7 +97,7 @@ export default function TeachingSchedulePage() {
     } catch (err) {
       console.error('Error fetching classes/subjects:', err);
     }
-  }, []);
+  }, [teacherId]);
 
   useEffect(() => {
     fetchSchedules();
