@@ -295,7 +295,7 @@ export default function GuruRaporPage() {
   };
 
   return (
-    <DashboardLayout activeMenu="rapor" pageTitle="Kelola Rapor Digital" pageSubtitle="Evaluasi hasil belajar, ibadah harian, hafalan Qur'an, dan input catatan wali kelas.">
+    <DashboardLayout activeMenu="rapor" pageTitle="Kelola Rapor Digital" pageSubtitle="Pilih kelas dan siswa untuk melihat, mengedit, dan mencetak rapor lengkap (nilai akademik, kehadiran, tahfidz, dan catatan wali kelas).">
       
       {/* Styles */}
       <style dangerouslySetInnerHTML={{ __html: `
