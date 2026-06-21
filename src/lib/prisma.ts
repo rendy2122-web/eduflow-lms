@@ -31,14 +31,28 @@ export function getPrismaClient(dbUrl: string): PrismaClient {
 export function getActivePrisma(): PrismaClient {
   try {
     const headerList = headers();
-    const tenantId = headerList.get('x-tenant-id');
+    const tenantId = headerList.get('x-tenant-id') || '';
     if (tenantId) {
       const dbUrl = getTenantDbUrl(tenantId);
-      console.log(`[getActivePrisma] tenantId: "${tenantId}", dbUrl: "${dbUrl}"`);
+      console.log(`[getActivePrisma] Header tenantId: "${tenantId}", dbUrl: "${dbUrl}"`);
       return getPrismaClient(dbUrl);
     }
   } catch (e) {
     console.error(`[getActivePrisma] Error reading headers:`, e);
+  }
+  
+  // Fallback: try cookie-based session_tenant_id (for /login without tenant prefix)
+  try {
+    const { cookies } = require('next/headers');
+    const cookieStore = cookies();
+    const sessionTenantId = cookieStore.get('session_tenant_id')?.value;
+    if (sessionTenantId) {
+      const dbUrl = getTenantDbUrl(sessionTenantId);
+      console.log(`[getActivePrisma] Cookie session_tenant_id: "${sessionTenantId}", dbUrl: "${dbUrl}"`);
+      return getPrismaClient(dbUrl);
+    }
+  } catch (e) {
+    console.log('[getActivePrisma] No cookie tenant:', (e as Error).message);
   }
   
   const defaultUrl = process.env.DATABASE_URL || `file:${process.cwd().replace(/\\/g, '/')}/prisma/dev.db`;
