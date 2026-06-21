@@ -46,6 +46,55 @@ export function getActivePrisma(): PrismaClient {
   return getPrismaClient(defaultUrl);
 }
 
+/**
+ * getTenantList() - Mengambil daftar tenant aktif dari database control.
+ * Untuk development, jika control DB belum ada, fallback ke list statis.
+ */
+export async function getTenantList(): Promise<{ pathSegment: string; name: string; status: string }[]> {
+  const baseDir = process.cwd().replace(/\\/g, '/');
+  const controlDbUrl = `file:${baseDir}/prisma/control.db`;
+  
+  try {
+    const controlPrisma = getPrismaClient(controlDbUrl);
+    const tenants = await controlPrisma.tenant.findMany({
+      select: { pathSegment: true, name: true, status: true },
+      where: { status: { not: 'SUSPENDED' } }
+    });
+    
+    if (tenants.length > 0) {
+      return tenants.map(t => ({
+        pathSegment: t.pathSegment,
+        name: t.name,
+        status: t.status
+      }));
+    }
+  } catch (e) {
+    console.log('[getTenantList] Control DB not available, using fallback:', e);
+  }
+  
+  // Fallback: scan prisma/tenants directory for .db files
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const tenantsDir = path.join(process.cwd(), 'prisma', 'tenants');
+    if (fs.existsSync(tenantsDir)) {
+      const files = fs.readdirSync(tenantsDir).filter((f: string) => f.endsWith('.db'));
+      if (files.length > 0) {
+        return files.map((f: string) => ({
+          pathSegment: f.replace('.db', ''),
+          name: f.replace('.db', '').charAt(0).toUpperCase() + f.replace('.db', '').slice(1),
+          status: 'ACTIVE'
+        }));
+      }
+    }
+  } catch (e) {
+    console.log('[getTenantList] Filesystem fallback not available:', e);
+  }
+  
+  // Ultimate fallback: return empty list
+  return [];
+}
+
 // Export default prisma untuk kompatibilitas
 export const prisma = new Proxy({} as PrismaClient, {
   get(target, prop, receiver) {
