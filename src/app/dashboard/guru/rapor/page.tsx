@@ -966,7 +966,7 @@ export default function GuruRaporPage() {
 
                   {/* Character/Habit Tracker */}
                   <div>
-                    <h4 style={{ margin: '0 0 10px 0', fontSize: '0.92rem', fontWeight: 'bold', fontFamily: 'sans-serif', textTransform: 'uppercase', borderBottom: '1px solid #000', paddingBottom: '4px' }}>C. Mutaba'ah Yaumiyah</h4>
+                    <h4 style={{ margin: '0 0 10px 0', fontSize: '0.92rem', fontWeight: 'bold', fontFamily: 'sans-serif', textTransform: 'uppercase', borderBottom: '1px solid #000', paddingBottom: '4px' }}>C. Mutaba&apos;ah Yaumiyah</h4>
                     <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
                       <tbody>
                         <tr style={{ borderBottom: '1px solid #cbd5e1' }}>
@@ -988,7 +988,7 @@ export default function GuruRaporPage() {
 
                 {/* Section C: Tahfidz */}
                 <div style={{ marginBottom: '24px' }}>
-                  <h4 style={{ margin: '0 0 10px 0', fontSize: '0.92rem', fontWeight: 'bold', fontFamily: 'sans-serif', textTransform: 'uppercase', borderBottom: '1px solid #000', paddingBottom: '4px' }}>D. Perkembangan Hafalan Al-Qur'an (Tahfidz)</h4>
+                  <h4 style={{ margin: '0 0 10px 0', fontSize: '0.92rem', fontWeight: 'bold', fontFamily: 'sans-serif', textTransform: 'uppercase', borderBottom: '1px solid #000', paddingBottom: '4px' }}>D. Perkembangan Hafalan Al-Qur&apos;an (Tahfidz)</h4>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
                     <thead>
                       <tr style={{ borderBottom: '1px solid #000' }}>

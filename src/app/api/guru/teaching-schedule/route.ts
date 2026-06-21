@@ -1,18 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { checkAuth } from '@/lib/auth';
+
+export const dynamic = 'force-dynamic';
 
 // GET - Ambil semua jadwal mengajar guru
 export async function GET(request: NextRequest) {
   try {
+    const auth = await checkAuth(['guru', 'admin']);
+    if (!auth.authorized) {
+      return NextResponse.json({ success: false, error: auth.error }, { status: auth.status });
+    }
+
     const searchParams = request.nextUrl.searchParams;
-    const teacherId = searchParams.get('teacherId');
+    let teacherId = searchParams.get('teacherId');
     const dayOfWeek = searchParams.get('dayOfWeek');
 
-    if (!teacherId) {
-      return NextResponse.json(
-        { success: false, error: 'teacherId harus diisi' },
-        { status: 400 }
-      );
+    if (!teacherId || teacherId === 'guru-001') {
+      teacherId = auth.user.id;
     }
 
     const where: any = { teacher_id: teacherId };
@@ -71,8 +76,17 @@ export async function GET(request: NextRequest) {
 // POST - Tambah jadwal baru
 export async function POST(request: NextRequest) {
   try {
+    const auth = await checkAuth(['guru', 'admin']);
+    if (!auth.authorized) {
+      return NextResponse.json({ success: false, error: auth.error }, { status: auth.status });
+    }
+
     const body = await request.json();
-    const { teacher_id, class_id, subject_id, day_of_week, start_time, end_time, room } = body;
+    let { teacher_id, class_id, subject_id, day_of_week, start_time, end_time, room } = body;
+
+    if (!teacher_id || teacher_id === 'guru-001') {
+      teacher_id = auth.user.id;
+    }
 
     if (!teacher_id || !class_id || !subject_id || !day_of_week || !start_time || !end_time) {
       return NextResponse.json(
@@ -141,6 +155,11 @@ export async function POST(request: NextRequest) {
 // PUT - Edit jadwal
 export async function PUT(request: NextRequest) {
   try {
+    const auth = await checkAuth(['guru', 'admin']);
+    if (!auth.authorized) {
+      return NextResponse.json({ success: false, error: auth.error }, { status: auth.status });
+    }
+
     const body = await request.json();
     const { id, class_id, subject_id, day_of_week, start_time, end_time, room } = body;
 
@@ -217,6 +236,11 @@ export async function PUT(request: NextRequest) {
 // DELETE - Hapus jadwal
 export async function DELETE(request: NextRequest) {
   try {
+    const auth = await checkAuth(['guru', 'admin']);
+    if (!auth.authorized) {
+      return NextResponse.json({ success: false, error: auth.error }, { status: auth.status });
+    }
+
     const searchParams = request.nextUrl.searchParams;
     const id = searchParams.get('id');
 

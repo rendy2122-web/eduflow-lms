@@ -147,8 +147,8 @@ export default function GuruClassesPage() {
   const [sortBy, setSortBy] = useState<'name' | 'attendance_desc' | 'attendance_asc'>('name');
   
   // Pagination states
-  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
-  const [visibleCount, setVisibleCount] = useState<number>(10);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(5);
+  const [visibleCount, setVisibleCount] = useState<number>(5);
 
   // Modal & Form states
   const [showClassModal, setShowClassModal] = useState(false);
@@ -479,10 +479,10 @@ export default function GuruClassesPage() {
         marginBottom: '24px'
       }}>
         {[
-          { title: 'Total Kelas Diajar', val: `${globalStats.totalClasses} Kelas`, color: theme.primary, bg: theme.primaryLight, path: 'M3 9H21M3 15H21M12 3V21' },
-          { title: 'Total Siswa Aktif', val: `${globalStats.totalStudents} Siswa`, color: theme.info, bg: theme.infoLight, path: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75' },
-          { title: 'Rata-rata Kehadiran', val: `${globalStats.averageAttendance}%`, color: theme.success, bg: theme.successLight, path: 'M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
-          { title: 'Mata Pelajaran Aktif', val: `${globalStats.activeSubjects} Mapel`, color: theme.warning, bg: theme.warningLight, path: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253' }
+          { title: 'Total Kelas Diajar', val: `${globalStats?.totalClasses || 0} Kelas`, color: theme.primary, bg: theme.primaryLight, path: 'M3 9H21M3 15H21M12 3V21' },
+          { title: 'Total Siswa Aktif', val: `${globalStats?.totalStudents || 0} Siswa`, color: theme.info, bg: theme.infoLight, path: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75' },
+          { title: 'Rata-rata Kehadiran', val: `${globalStats?.averageAttendance || 0}%`, color: theme.success, bg: theme.successLight, path: 'M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+          { title: 'Mata Pelajaran Aktif', val: `${globalStats?.activeSubjects || 0} Mapel`, color: theme.warning, bg: theme.warningLight, path: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253' }
         ].map((metric, idx) => (
           <div 
             key={idx}
@@ -902,6 +902,7 @@ export default function GuruClassesPage() {
                         cursor: 'pointer'
                       }}
                     >
+                      <option value="5">5</option>
                       <option value="10">10</option>
                       <option value="50">50</option>
                       <option value="100">100</option>

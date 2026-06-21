@@ -698,6 +698,12 @@ export default function GuruDashboardPage() {
     return matchesName && matchesClass;
   });
 
+  // Pagination states
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [visibleCount, setVisibleCount] = useState(5);
+
+  const displayedStudents = filteredStudents.slice(0, visibleCount);
+
   const theme = {
     primary: '#6366f1',
     primaryLight: '#e0e7ff',
@@ -1080,7 +1086,7 @@ export default function GuruDashboardPage() {
                       </td>
                     </tr>
                   ) : (
-                    filteredStudents.map((student) => (
+                    displayedStudents.map((student) => (
                       <tr key={student.id} style={{ borderBottom: '1px solid #f1f5f9', transition: 'background-color 0.2s' }} className="btn-action-active">
                         <td style={{ padding: '10px 8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                           <img 
@@ -1124,6 +1130,82 @@ export default function GuruDashboardPage() {
                 </tbody>
               </table>
             </div>
+
+            {/* Pagination Controls */}
+            {!loading && filteredStudents.length > 0 && (
+              <div style={{
+                padding: '12px 0px 0px 0px',
+                borderTop: '1px solid #e2e8f0',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: '12px',
+                marginTop: '12px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b' }}>Tampilkan</span>
+                  <select
+                    value={itemsPerPage}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value);
+                      setItemsPerPage(val);
+                      setVisibleCount(val);
+                    }}
+                    style={{
+                      padding: '4px 8px',
+                      borderRadius: '6px',
+                      border: '1px solid #e2e8f0',
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      color: '#0f172a',
+                      background: '#ffffff',
+                      outline: 'none',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={25}>25</option>
+                    <option value={50}>50</option>
+                    <option value={100}>100</option>
+                  </select>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                    murid dari total {filteredStudents.length} murid
+                  </span>
+                </div>
+
+                {visibleCount < filteredStudents.length && (
+                  <button
+                    onClick={() => setVisibleCount(prev => prev + itemsPerPage)}
+                    style={{
+                      padding: '6px 12px',
+                      borderRadius: '8px',
+                      background: '#ffffff',
+                      border: '1px solid #e2e8f0',
+                      color: '#4f46e5',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                      transition: 'all 0.2s'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = '#4f46e5';
+                      e.currentTarget.style.color = '#ffffff';
+                      e.currentTarget.style.borderColor = '#4f46e5';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = '#ffffff';
+                      e.currentTarget.style.color = '#4f46e5';
+                      e.currentTarget.style.borderColor = '#e2e8f0';
+                    }}
+                  >
+                    Tampilkan Lebih Banyak
+                  </button>
+                )}
+              </div>
+            )}
           </section>
 
           {/* Jurnal Tahfidz Murid */}

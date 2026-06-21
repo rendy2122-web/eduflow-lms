@@ -52,6 +52,8 @@ export default function GuruStudentsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterClass, setFilterClass] = useState('all');
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(5);
+  const [visibleCount, setVisibleCount] = useState<number>(5);
   
   // Academic note local states
   const [localNote, setLocalNote] = useState('');
@@ -140,6 +142,9 @@ export default function GuruStudentsPage() {
     const matchesClass = filterClass === 'all' || s.classId === filterClass;
     return matchesSearch && matchesClass;
   });
+
+  const displayedStudents = filteredStudents.slice(0, visibleCount);
+  const hasMoreStudents = visibleCount < filteredStudents.length;
 
   const totalCount = students.length;
   const homeschoolCount = students.filter(s => s.progress > 0).length;
@@ -241,7 +246,7 @@ export default function GuruStudentsPage() {
           </div>
         ) : (
           <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
-            {filteredStudents.map((s) => {
+            {displayedStudents.map((s) => {
               const isHomeschool = s.progress > 0;
               return (
                 <div 
@@ -316,6 +321,93 @@ export default function GuruStudentsPage() {
               );
             })}
           </section>
+        )}
+
+        {/* Pagination Controls */}
+        {!loading && filteredStudents.length > 0 && (
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '16px 24px',
+            background: '#ffffff',
+            border: '1px solid #e2e8f0',
+            borderRadius: '16px',
+            flexWrap: 'wrap',
+            gap: '12px',
+            marginTop: '-8px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>Tampilkan:</span>
+              <select
+                value={itemsPerPage}
+                onChange={(e) => {
+                  const newValue = parseInt(e.target.value);
+                  setItemsPerPage(newValue);
+                  setVisibleCount(newValue);
+                }}
+                style={{
+                  padding: '4px 8px',
+                  borderRadius: '6px',
+                  border: '1px solid #cbd5e1',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  backgroundColor: '#ffffff',
+                  color: '#334155',
+                  cursor: 'pointer'
+                }}
+              >
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+              <span style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                dari {filteredStudents.length} siswa
+              </span>
+            </div>
+
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>
+                Menampilkan {displayedStudents.length} dari {filteredStudents.length}
+              </span>
+              {hasMoreStudents && (
+                <button
+                  onClick={() => setVisibleCount(prev => prev + itemsPerPage)}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: '6px',
+                    background: 'linear-gradient(135deg, #4f46e5, #6366f1)',
+                    color: '#ffffff',
+                    border: 'none',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 8px rgba(79, 70, 229, 0.2)'
+                  }}
+                >
+                  Tampilkan Lebih Banyak ({Math.min(itemsPerPage, filteredStudents.length - visibleCount)} lagi)
+                </button>
+              )}
+              {visibleCount > itemsPerPage && (
+                <button
+                  onClick={() => setVisibleCount(itemsPerPage)}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: '6px',
+                    background: '#ffffff',
+                    color: '#4f46e5',
+                    border: '1px solid #4f46e5',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    cursor: 'pointer'
+                  }}
+                >
+                  Tampilkan Lebih Sedikit
+                </button>
+              )}
+            </div>
+          </div>
         )}
 
         {/* 🔍 Details Modal Sidebar */}

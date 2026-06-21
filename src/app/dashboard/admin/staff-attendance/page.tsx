@@ -32,6 +32,10 @@ export default function AdminStaffAttendancePage() {
   const [currentTime, setCurrentTime] = useState('');
   const [successBanner, setSuccessBanner] = useState<string | null>(null);
 
+  // Pagination states
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [visibleCount, setVisibleCount] = useState(5);
+
   // 1. Fetch data from API
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -443,7 +447,7 @@ export default function AdminStaffAttendancePage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {logs.map((log, idx) => {
+                  {logs.slice(0, visibleCount).map((log, idx) => {
                     const statusCfg = STATUS_CONFIG[log.status] || STATUS_CONFIG.belum_absen;
                     const initials = log.name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
                     const hue = (idx * 67) % 360;
@@ -511,6 +515,82 @@ export default function AdminStaffAttendancePage() {
                   })}
                 </tbody>
               </table>
+            </div>
+          )}
+
+          {/* Pagination Controls */}
+          {!loading && logs.length > 0 && (
+            <div style={{
+              padding: '16px 24px',
+              borderTop: '1px solid #e2e8f0',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '12px',
+              backgroundColor: '#f8fafc'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '0.8rem', color: '#64748b' }}>Tampilkan</span>
+                <select
+                  value={itemsPerPage}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value);
+                    setItemsPerPage(val);
+                    setVisibleCount(val);
+                  }}
+                  style={{
+                    padding: '4px 8px',
+                    borderRadius: '6px',
+                    border: '1px solid #e2e8f0',
+                    fontSize: '0.8rem',
+                    fontWeight: 600,
+                    color: '#0f172a',
+                    background: '#ffffff',
+                    outline: 'none',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <option value={5}>5</option>
+                  <option value={10}>10</option>
+                  <option value={25}>25</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
+                </select>
+                <span style={{ fontSize: '0.8rem', color: '#64748b' }}>
+                  staf dari total {logs.length} staf
+                </span>
+              </div>
+
+              {visibleCount < logs.length && (
+                <button
+                  onClick={() => setVisibleCount(prev => prev + itemsPerPage)}
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    background: '#ffffff',
+                    border: '1px solid #e2e8f0',
+                    color: '#4f46e5',
+                    fontSize: '0.8rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#4f46e5';
+                    e.currentTarget.style.color = '#ffffff';
+                    e.currentTarget.style.borderColor = '#4f46e5';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = '#ffffff';
+                    e.currentTarget.style.color = '#4f46e5';
+                    e.currentTarget.style.borderColor = '#e2e8f0';
+                  }}
+                >
+                  Tampilkan Lebih Banyak
+                </button>
+              )}
             </div>
           )}
         </section>

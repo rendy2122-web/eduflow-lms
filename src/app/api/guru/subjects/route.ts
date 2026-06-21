@@ -1,17 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { checkAuth } from '@/lib/auth';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
+    const auth = await checkAuth(['guru', 'admin']);
+    if (!auth.authorized) {
+      return NextResponse.json({ success: false, error: auth.error }, { status: auth.status });
+    }
+
     const searchParams = request.nextUrl.searchParams;
-    const teacherId = searchParams.get('teacherId');
+    let teacherId = searchParams.get('teacherId');
     const classId = searchParams.get('classId');
 
-    if (!teacherId) {
-      return NextResponse.json(
-        { success: false, error: 'teacherId harus diisi' },
-        { status: 400 }
-      );
+    // Use logged in teacher ID as fallback or override
+    if (!teacherId || teacherId === 'guru-001') {
+      teacherId = auth.user.id;
     }
 
     const where: any = { teacher_id: teacherId };

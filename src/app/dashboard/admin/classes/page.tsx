@@ -192,6 +192,12 @@ export default function AdminClassesPage() {
     cls.description?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Pagination states
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [visibleCount, setVisibleCount] = useState(5);
+
+  const displayedClasses = filteredClasses.slice(0, visibleCount);
+
   return (
     <DashboardLayout 
       activeMenu="classes" 
@@ -354,259 +360,339 @@ export default function AdminClassesPage() {
             )}
           </div>
         ) : (
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-            gap: '20px'
-          }}>
-            {filteredClasses.map((cls) => (
-              <div
-                key={cls.id}
-                style={{
-                  background: '#ffffff',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '16px',
-                  padding: '24px',
-                  transition: 'all 0.3s ease',
-                  cursor: 'pointer'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-4px)';
-                  e.currentTarget.style.boxShadow = '0 12px 24px -8px rgba(0, 0, 0, 0.1)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = 'none';
-                }}
-              >
-                {/* Class Header */}
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'flex-start',
-                  marginBottom: '16px'
-                }}>
-                  <div style={{
-                    width: '48px',
-                    height: '48px',
-                    borderRadius: '12px',
-                    background: 'linear-gradient(135deg, #4f46e5, #6366f1)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#ffffff',
-                    fontWeight: 800,
-                    fontSize: '1.2rem',
-                    flexShrink: 0
-                  }}>
-                    {cls.name.charAt(0).toUpperCase()}
-                  </div>
-                  <div style={{
-                    display: 'flex',
-                    gap: '6px'
-                  }}>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleOpenModal(cls);
-                      }}
-                      style={{
-                        padding: '6px 10px',
-                        borderRadius: '6px',
-                        border: '1px solid #4f46e5',
-                        background: 'transparent',
-                        color: '#4f46e5',
-                        fontSize: '0.75rem',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                        transition: 'all 0.2s'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = '#4f46e5';
-                        e.currentTarget.style.color = '#ffffff';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'transparent';
-                        e.currentTarget.style.color = '#4f46e5';
-                      }}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setShowDeleteConfirm(cls.id);
-                      }}
-                      style={{
-                        padding: '6px 10px',
-                        borderRadius: '6px',
-                        border: '1px solid #ef4444',
-                        background: 'transparent',
-                        color: '#ef4444',
-                        fontSize: '0.75rem',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                        transition: 'all 0.2s'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = '#ef4444';
-                        e.currentTarget.style.color = '#ffffff';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'transparent';
-                        e.currentTarget.style.color = '#ef4444';
-                      }}
-                    >
-                      Hapus
-                    </button>
-                  </div>
-                </div>
-
-                {/* Class Info */}
-                <h3 style={{
-                  fontSize: '1.1rem',
-                  fontWeight: 800,
-                  color: '#0f172a',
-                  margin: '0 0 8px 0'
-                }}>
-                  {cls.name}
-                </h3>
-                
-                {cls.description && (
-                  <p style={{
-                    fontSize: '0.85rem',
-                    color: '#64748b',
-                    margin: '0 0 16px 0',
-                    lineHeight: '1.5'
-                  }}>
-                    {cls.description}
-                  </p>
-                )}
-
-                {/* Stats */}
-                <div style={{
-                  display: 'flex',
-                  gap: '16px',
-                  paddingTop: '16px',
-                  borderTop: '1px solid #f1f5f9'
-                }}>
-                  <div style={{ flex: 1 }}>
-                    <p style={{
-                      fontSize: '0.72rem',
-                      color: '#64748b',
-                      fontWeight: 600,
-                      margin: '0 0 4px 0'
-                    }}>
-                      Mata Pelajaran
-                    </p>
-                    <p style={{
-                      fontSize: '1.25rem',
-                      fontWeight: 800,
-                      color: '#4f46e5',
-                      margin: 0
-                    }}>
-                      {cls._count.subjects}
-                    </p>
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <p style={{
-                      fontSize: '0.72rem',
-                      color: '#64748b',
-                      fontWeight: 600,
-                      margin: '0 0 4px 0'
-                    }}>
-                      Siswa
-                    </p>
-                    <p style={{
-                      fontSize: '1.25rem',
-                      fontWeight: 800,
-                      color: '#10b981',
-                      margin: 0
-                    }}>
-                      {cls._count.profiles}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Homeroom Teacher */}
-                <div style={{
-                  marginTop: '12px',
-                  paddingTop: '12px',
-                  borderTop: '1px solid #f1f5f9',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px'
-                }}>
-                  <div style={{
-                    width: '24px',
-                    height: '24px',
-                    borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #f59e0b, #fbbf24)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#ffffff',
-                    fontSize: '0.7rem',
-                    fontWeight: 700,
-                    flexShrink: 0
-                  }}>
-                    👨‍🏫
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{
-                      fontSize: '0.68rem',
-                      color: '#64748b',
-                      fontWeight: 600,
-                      margin: '0 0 2px 0'
-                    }}>
-                      Wali Kelas
-                    </p>
-                    <p style={{
-                      fontSize: '0.8rem',
-                      fontWeight: 700,
-                      color: '#0f172a',
-                      margin: 0,
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap'
-                    }}>
-                      {cls.homeroom_teacher?.nama || 'Belum ditugaskan'}
-                    </p>
-                  </div>
-                </div>
-
-                {/* View Details Button */}
-                <button
-                  onClick={() => setSelectedClass(cls)}
+          <>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+              gap: '20px'
+            }}>
+              {displayedClasses.map((cls) => (
+                <div
+                  key={cls.id}
                   style={{
-                    width: '100%',
-                    marginTop: '16px',
-                    padding: '8px',
-                    borderRadius: '8px',
+                    background: '#ffffff',
                     border: '1px solid #e2e8f0',
-                    background: '#f8fafc',
-                    color: '#475569',
-                    fontSize: '0.85rem',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    transition: 'all 0.2s'
+                    borderRadius: '16px',
+                    padding: '24px',
+                    transition: 'all 0.3s ease',
+                    cursor: 'pointer'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#4f46e5';
-                    e.currentTarget.style.color = '#ffffff';
-                    e.currentTarget.style.borderColor = '#4f46e5';
+                    e.currentTarget.style.transform = 'translateY(-4px)';
+                    e.currentTarget.style.boxShadow = '0 12px 24px -8px rgba(0, 0, 0, 0.1)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = '#f8fafc';
-                    e.currentTarget.style.color = '#475569';
-                    e.currentTarget.style.borderColor = '#e2e8f0';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = 'none';
                   }}
                 >
-                  Lihat Detail →
-                </button>
+                  {/* Class Header */}
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-start',
+                    marginBottom: '16px'
+                  }}>
+                    <div style={{
+                      width: '48px',
+                      height: '48px',
+                      borderRadius: '12px',
+                      background: 'linear-gradient(135deg, #4f46e5, #6366f1)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#ffffff',
+                      fontWeight: 800,
+                      fontSize: '1.2rem',
+                      flexShrink: 0
+                    }}>
+                      {cls.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div style={{
+                      display: 'flex',
+                      gap: '6px'
+                    }}>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenModal(cls);
+                        }}
+                        style={{
+                          padding: '6px 10px',
+                          borderRadius: '6px',
+                          border: '1px solid #4f46e5',
+                          background: 'transparent',
+                          color: '#4f46e5',
+                          fontSize: '0.75rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          transition: 'all 0.2s'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = '#4f46e5';
+                          e.currentTarget.style.color = '#ffffff';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = 'transparent';
+                          e.currentTarget.style.color = '#4f46e5';
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowDeleteConfirm(cls.id);
+                        }}
+                        style={{
+                          padding: '6px 10px',
+                          borderRadius: '6px',
+                          border: '1px solid #ef4444',
+                          background: 'transparent',
+                          color: '#ef4444',
+                          fontSize: '0.75rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          transition: 'all 0.2s'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = '#ef4444';
+                          e.currentTarget.style.color = '#ffffff';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = 'transparent';
+                          e.currentTarget.style.color = '#ef4444';
+                        }}
+                      >
+                        Hapus
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Class Info */}
+                  <h3 style={{
+                    fontSize: '1.1rem',
+                    fontWeight: 800,
+                    color: '#0f172a',
+                    margin: '0 0 8px 0'
+                  }}>
+                    {cls.name}
+                  </h3>
+                  
+                  {cls.description && (
+                    <p style={{
+                      fontSize: '0.85rem',
+                      color: '#64748b',
+                      margin: '0 0 16px 0',
+                      lineHeight: '1.5'
+                    }}>
+                      {cls.description}
+                    </p>
+                  )}
+
+                  {/* Stats */}
+                  <div style={{
+                    display: 'flex',
+                    gap: '16px',
+                    paddingTop: '16px',
+                    borderTop: '1px solid #f1f5f9'
+                  }}>
+                    <div style={{ flex: 1 }}>
+                      <p style={{
+                        fontSize: '0.72rem',
+                        color: '#64748b',
+                        fontWeight: 600,
+                        margin: '0 0 4px 0'
+                      }}>
+                        Mata Pelajaran
+                      </p>
+                      <p style={{
+                        fontSize: '1.25rem',
+                        fontWeight: 800,
+                        color: '#4f46e5',
+                        margin: 0
+                      }}>
+                        {cls._count.subjects}
+                      </p>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <p style={{
+                        fontSize: '0.72rem',
+                        color: '#64748b',
+                        fontWeight: 600,
+                        margin: '0 0 4px 0'
+                      }}>
+                        Siswa
+                      </p>
+                      <p style={{
+                        fontSize: '1.25rem',
+                        fontWeight: 800,
+                        color: '#10b981',
+                        margin: 0
+                      }}>
+                        {cls._count.profiles}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Homeroom Teacher */}
+                  <div style={{
+                    marginTop: '12px',
+                    paddingTop: '12px',
+                    borderTop: '1px solid #f1f5f9',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <div style={{
+                      width: '24px',
+                      height: '24px',
+                      borderRadius: '50%',
+                      background: 'linear-gradient(135deg, #f59e0b, #fbbf24)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#ffffff',
+                      fontSize: '0.7rem',
+                      fontWeight: 700,
+                      flexShrink: 0
+                    }}>
+                      👨‍🏫
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{
+                        fontSize: '0.68rem',
+                        color: '#64748b',
+                        fontWeight: 600,
+                        margin: '0 0 2px 0'
+                      }}>
+                        Wali Kelas
+                      </p>
+                      <p style={{
+                        fontSize: '0.8rem',
+                        fontWeight: 700,
+                        color: '#0f172a',
+                        margin: 0,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap'
+                      }}>
+                        {cls.homeroom_teacher?.nama || 'Belum ditugaskan'}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* View Details Button */}
+                  <button
+                    onClick={() => setSelectedClass(cls)}
+                    style={{
+                      width: '100%',
+                      marginTop: '16px',
+                      padding: '8px',
+                      borderRadius: '8px',
+                      border: '1px solid #e2e8f0',
+                      background: '#f8fafc',
+                      color: '#475569',
+                      fontSize: '0.85rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      transition: 'all 0.2s'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = '#4f46e5';
+                      e.currentTarget.style.color = '#ffffff';
+                      e.currentTarget.style.borderColor = '#4f46e5';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = '#f8fafc';
+                      e.currentTarget.style.color = '#475569';
+                      e.currentTarget.style.borderColor = '#e2e8f0';
+                    }}
+                  >
+                    Lihat Detail →
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* Pagination Controls */}
+            {filteredClasses.length > 0 && (
+              <div style={{
+                background: '#ffffff',
+                border: '1px solid #e2e8f0',
+                borderRadius: '16px',
+                padding: '16px 24px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: '12px',
+                marginTop: '12px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '0.8rem', color: '#64748b' }}>Tampilkan</span>
+                  <select
+                    value={itemsPerPage}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value);
+                      setItemsPerPage(val);
+                      setVisibleCount(val);
+                    }}
+                    style={{
+                      padding: '4px 8px',
+                      borderRadius: '6px',
+                      border: '1px solid #e2e8f0',
+                      fontSize: '0.8rem',
+                      fontWeight: 600,
+                      color: '#0f172a',
+                      background: '#ffffff',
+                      outline: 'none',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={25}>25</option>
+                    <option value={50}>50</option>
+                    <option value={100}>100</option>
+                  </select>
+                  <span style={{ fontSize: '0.8rem', color: '#64748b' }}>
+                    kelas dari total {filteredClasses.length} kelas
+                  </span>
+                </div>
+
+                {visibleCount < filteredClasses.length && (
+                  <button
+                    onClick={() => setVisibleCount(prev => prev + itemsPerPage)}
+                    style={{
+                      padding: '8px 16px',
+                      borderRadius: '8px',
+                      background: '#ffffff',
+                      border: '1px solid #e2e8f0',
+                      color: '#4f46e5',
+                      fontSize: '0.8rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                      transition: 'all 0.2s'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = '#4f46e5';
+                      e.currentTarget.style.color = '#ffffff';
+                      e.currentTarget.style.borderColor = '#4f46e5';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = '#ffffff';
+                      e.currentTarget.style.color = '#4f46e5';
+                      e.currentTarget.style.borderColor = '#e2e8f0';
+                    }}
+                  >
+                    Tampilkan Lebih Banyak
+                  </button>
+                )}
               </div>
-            ))}
-          </div>
+            )}
+          </>
         )}
 
         {/* Stats */}

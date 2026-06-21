@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 // GET: Fetch all students with their class and parent/guardian info
 export async function GET() {
   try {
-    const auth = await checkAuth(['admin']);
+    const auth = await checkAuth(['admin', 'guru']);
     if (!auth.authorized) {
       return NextResponse.json({ success: false, error: auth.error }, { status: auth.status });
     }

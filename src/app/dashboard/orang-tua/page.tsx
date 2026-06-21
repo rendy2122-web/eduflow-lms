@@ -78,6 +78,7 @@ export default function OrtuDashboardPage() {
   const [newPortfolioType, setNewPortfolioType] = useState('Akademik');
   const [newPortfolioDuration, setNewPortfolioDuration] = useState('1 Jam');
   const [newPortfolioReflection, setNewPortfolioReflection] = useState('');
+  const portfolioFileInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch children data
   async function fetchParentDashboardData() {
@@ -976,7 +977,7 @@ export default function OrtuDashboardPage() {
                       onSubmit={handleSubmitPortfolio}
                       submitStatus={portfolioStatus}
                       isSubmitting={false}
-                      fileInputRef={useRef<HTMLInputElement>(null)}
+                      fileInputRef={portfolioFileInputRef}
                     />
                   </div>
 

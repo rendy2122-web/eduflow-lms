@@ -80,8 +80,8 @@ export async function GET(req: NextRequest) {
     const reports = students.map(student => {
       // Calculate assignment grades
       const assignmentGrades = student.submissions
-        .filter(sub => sub.score !== null)
-        .map(sub => ({
+        .filter((sub: any) => sub.score !== null)
+        .map((sub: any) => ({
           type: 'Tugas',
           subject: sub.task.subject.name,
           subjectCode: sub.task.subject.code,

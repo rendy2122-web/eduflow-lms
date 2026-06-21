@@ -176,7 +176,8 @@ export default function DashboardLayout({ children, activeMenu, pageTitle, pageS
         const json = await res.json();
         if (!json.success) {
           localStorage.clear();
-          window.location.href = tenantId ? `/${tenantId}/login` : '/login';
+          // Always redirect to main login page when session is invalid
+          window.location.href = '/login';
           return;
         }
       } catch (err) {
@@ -243,11 +244,10 @@ export default function DashboardLayout({ children, activeMenu, pageTitle, pageS
     }
     localStorage.removeItem('user_role');
     localStorage.removeItem('user_name');
-    if (tenantId) {
-      router.push(`/${tenantId}/login`);
-    } else {
-      router.push('/login');
-    }
+    localStorage.removeItem('tenant_id');
+    localStorage.removeItem('tenant_name');
+    // Always redirect to the main login page, not the tenant-specific login
+    router.push('/login');
   };
 
   const isAdmin = userRole === 'admin';

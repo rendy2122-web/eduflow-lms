@@ -48,7 +48,8 @@ async function main() {
   for (const data of teacherData) {
     const teacher = await prisma.user.create({
       data: {
-        ...data,
+        nama: data.nama,
+        email: data.email,
         password_hash: 'default123',
         role: 'guru',
         profile: {
@@ -182,7 +183,7 @@ async function main() {
           subject_id: subject.id,
           teacher_id: subject.teacher_id,
           class_id: cls.id,
-          day,
+          day_of_week: day.toUpperCase(),
           start_time: startTime,
           end_time: endTime,
           room: `Ruang ${Math.floor(Math.random() * 20) + 1}`

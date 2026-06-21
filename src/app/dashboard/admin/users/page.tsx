@@ -22,6 +22,8 @@ export default function AdminUsersPage() {
   const [showModal, setShowModal] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(5);
+  const [visibleCount, setVisibleCount] = useState<number>(5);
 
   // Form states
   const [formData, setFormData] = useState({
@@ -87,6 +89,9 @@ export default function AdminUsersPage() {
 
     setFilteredUsers(filtered);
   };
+
+  const displayedUsers = filteredUsers.slice(0, visibleCount);
+  const hasMoreUsers = visibleCount < filteredUsers.length;
 
   const handleOpenModal = (user?: User) => {
     if (user) {
@@ -375,7 +380,7 @@ export default function AdminUsersPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredUsers.map((user) => (
+                  {displayedUsers.map((user) => (
                     <tr 
                       key={user.id} 
                       style={{
@@ -487,6 +492,90 @@ export default function AdminUsersPage() {
                   ))}
                 </tbody>
               </table>
+            </div>
+          )}
+          
+          {/* Pagination Controls */}
+          {filteredUsers.length > 0 && (
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '16px',
+              borderTop: '1px solid #e2e8f0',
+              flexWrap: 'wrap',
+              gap: '12px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>Tampilkan:</span>
+                <select
+                  value={itemsPerPage}
+                  onChange={(e) => {
+                    const newValue = parseInt(e.target.value);
+                    setItemsPerPage(newValue);
+                    setVisibleCount(newValue);
+                  }}
+                  style={{
+                    padding: '4px 8px',
+                    borderRadius: '6px',
+                    border: '1px solid #cbd5e1',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    backgroundColor: '#ffffff',
+                    color: '#334155',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+                <span style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                  dari {filteredUsers.length} pengguna
+                </span>
+              </div>
+
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>
+                  Menampilkan {displayedUsers.length} dari {filteredUsers.length}
+                </span>
+                {hasMoreUsers && (
+                  <button
+                    onClick={() => setVisibleCount(prev => prev + itemsPerPage)}
+                    style={{
+                      padding: '6px 12px',
+                      borderRadius: '6px',
+                      background: 'linear-gradient(135deg, #4f46e5, #6366f1)',
+                      color: '#ffffff',
+                      border: 'none',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 8px rgba(79, 70, 229, 0.2)'
+                    }}
+                  >
+                    Tampilkan Lebih Banyak ({Math.min(itemsPerPage, filteredUsers.length - visibleCount)} lagi)
+                  </button>
+                )}
+                {visibleCount > itemsPerPage && (
+                  <button
+                    onClick={() => setVisibleCount(itemsPerPage)}
+                    style={{
+                      padding: '6px 12px',
+                      borderRadius: '6px',
+                      background: '#ffffff',
+                      color: '#4f46e5',
+                      border: '1px solid #4f46e5',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Tampilkan Lebih Sedikit
+                  </button>
+                )}
+              </div>
             </div>
           )}
         </div>

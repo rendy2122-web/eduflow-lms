@@ -3,6 +3,124 @@
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 
+// Daftar lengkap 114 Surah Al-Quran
+const SURAH_LIST = [
+  { no: 1, name: 'Al-Fatihah', ayat: 7 },
+  { no: 2, name: 'Al-Baqarah', ayat: 286 },
+  { no: 3, name: 'Ali Imran', ayat: 200 },
+  { no: 4, name: 'An-Nisa', ayat: 176 },
+  { no: 5, name: 'Al-Maidah', ayat: 120 },
+  { no: 6, name: 'Al-Anam', ayat: 165 },
+  { no: 7, name: 'Al-Araf', ayat: 206 },
+  { no: 8, name: 'Al-Anfal', ayat: 75 },
+  { no: 9, name: 'At-Taubah', ayat: 129 },
+  { no: 10, name: 'Yunus', ayat: 109 },
+  { no: 11, name: 'Hud', ayat: 123 },
+  { no: 12, name: 'Yusuf', ayat: 111 },
+  { no: 13, name: 'Ar-Rad', ayat: 43 },
+  { no: 14, name: 'Ibrahim', ayat: 52 },
+  { no: 15, name: 'Al-Hijr', ayat: 99 },
+  { no: 16, name: 'An-Nahl', ayat: 128 },
+  { no: 17, name: 'Al-Isra', ayat: 111 },
+  { no: 18, name: 'Al-Kahfi', ayat: 110 },
+  { no: 19, name: 'Maryam', ayat: 98 },
+  { no: 20, name: 'Taha', ayat: 135 },
+  { no: 21, name: 'Al-Anbiya', ayat: 112 },
+  { no: 22, name: 'Al-Hajj', ayat: 78 },
+  { no: 23, name: 'Al-Muminun', ayat: 118 },
+  { no: 24, name: 'An-Nur', ayat: 64 },
+  { no: 25, name: 'Al-Furqan', ayat: 77 },
+  { no: 26, name: 'Asy-Syuara', ayat: 227 },
+  { no: 27, name: 'An-Naml', ayat: 93 },
+  { no: 28, name: 'Al-Qasas', ayat: 88 },
+  { no: 29, name: 'Al-Ankabut', ayat: 69 },
+  { no: 30, name: 'Ar-Rum', ayat: 60 },
+  { no: 31, name: 'Luqman', ayat: 34 },
+  { no: 32, name: 'As-Sajdah', ayat: 30 },
+  { no: 33, name: 'Al-Ahzab', ayat: 73 },
+  { no: 34, name: 'Saba', ayat: 54 },
+  { no: 35, name: 'Fatir', ayat: 45 },
+  { no: 36, name: 'Yasin', ayat: 83 },
+  { no: 37, name: 'As-Saffat', ayat: 182 },
+  { no: 38, name: 'Sad', ayat: 88 },
+  { no: 39, name: 'Az-Zumar', ayat: 75 },
+  { no: 40, name: 'Ghafir', ayat: 85 },
+  { no: 41, name: 'Fussilat', ayat: 54 },
+  { no: 42, name: 'Asy-Syura', ayat: 53 },
+  { no: 43, name: 'Az-Zukhruf', ayat: 89 },
+  { no: 44, name: 'Ad-Dukhan', ayat: 59 },
+  { no: 45, name: 'Al-Jasiyah', ayat: 37 },
+  { no: 46, name: 'Al-Ahqaf', ayat: 35 },
+  { no: 47, name: 'Muhammad', ayat: 38 },
+  { no: 48, name: 'Al-Fath', ayat: 29 },
+  { no: 49, name: 'Al-Hujurat', ayat: 18 },
+  { no: 50, name: 'Qaf', ayat: 45 },
+  { no: 51, name: 'Az-Zariyat', ayat: 60 },
+  { no: 52, name: 'At-Tur', ayat: 49 },
+  { no: 53, name: 'An-Najm', ayat: 62 },
+  { no: 54, name: 'Al-Qamar', ayat: 55 },
+  { no: 55, name: 'Ar-Rahman', ayat: 78 },
+  { no: 56, name: 'Al-Waqiah', ayat: 96 },
+  { no: 57, name: 'Al-Hadid', ayat: 29 },
+  { no: 58, name: 'Al-Mujadilah', ayat: 22 },
+  { no: 59, name: 'Al-Hasyr', ayat: 24 },
+  { no: 60, name: 'Al-Mumtahanah', ayat: 13 },
+  { no: 61, name: 'As-Saf', ayat: 14 },
+  { no: 62, name: 'Al-Jumuah', ayat: 11 },
+  { no: 63, name: 'Al-Munafiqun', ayat: 11 },
+  { no: 64, name: 'At-Tagabun', ayat: 18 },
+  { no: 65, name: 'At-Talaq', ayat: 12 },
+  { no: 66, name: 'At-Tahrim', ayat: 12 },
+  { no: 67, name: 'Al-Mulk', ayat: 30 },
+  { no: 68, name: 'Al-Qalam', ayat: 52 },
+  { no: 69, name: 'Al-Haqqah', ayat: 52 },
+  { no: 70, name: 'Al-Maarij', ayat: 44 },
+  { no: 71, name: 'Nuh', ayat: 28 },
+  { no: 72, name: 'Al-Jin', ayat: 28 },
+  { no: 73, name: 'Al-Muzzammil', ayat: 20 },
+  { no: 74, name: 'Al-Muddassir', ayat: 56 },
+  { no: 75, name: 'Al-Qiyamah', ayat: 40 },
+  { no: 76, name: 'Al-Insan', ayat: 31 },
+  { no: 77, name: 'Al-Mursalat', ayat: 50 },
+  { no: 78, name: 'An-Naba', ayat: 40 },
+  { no: 79, name: "An-Nazi'at", ayat: 46 },
+  { no: 80, name: 'Abasa', ayat: 42 },
+  { no: 81, name: 'At-Takwir', ayat: 29 },
+  { no: 82, name: 'Al-Infitar', ayat: 19 },
+  { no: 83, name: 'Al-Mutaffifin', ayat: 36 },
+  { no: 84, name: 'Al-Insyiqaq', ayat: 25 },
+  { no: 85, name: 'Al-Buruj', ayat: 22 },
+  { no: 86, name: 'At-Tariq', ayat: 17 },
+  { no: 87, name: 'Al-Ala', ayat: 19 },
+  { no: 88, name: 'Al-Gasyiyah', ayat: 26 },
+  { no: 89, name: 'Al-Fajr', ayat: 30 },
+  { no: 90, name: 'Al-Balad', ayat: 20 },
+  { no: 91, name: 'Asy-Syams', ayat: 15 },
+  { no: 92, name: 'Al-Lail', ayat: 21 },
+  { no: 93, name: 'Ad-Duha', ayat: 11 },
+  { no: 94, name: 'Al-Insyirah', ayat: 8 },
+  { no: 95, name: 'At-Tin', ayat: 8 },
+  { no: 96, name: 'Al-Alaq', ayat: 19 },
+  { no: 97, name: 'Al-Qadr', ayat: 5 },
+  { no: 98, name: 'Al-Bayyinah', ayat: 8 },
+  { no: 99, name: 'Az-Zalzalah', ayat: 8 },
+  { no: 100, name: 'Al-Adiyat', ayat: 11 },
+  { no: 101, name: 'Al-Qariah', ayat: 11 },
+  { no: 102, name: 'At-Takasur', ayat: 8 },
+  { no: 103, name: 'Al-Asr', ayat: 3 },
+  { no: 104, name: 'Al-Humazah', ayat: 9 },
+  { no: 105, name: 'Al-Fil', ayat: 5 },
+  { no: 106, name: 'Quraisy', ayat: 4 },
+  { no: 107, name: 'Al-Maun', ayat: 7 },
+  { no: 108, name: 'Al-Kausar', ayat: 3 },
+  { no: 109, name: 'Al-Kafirun', ayat: 6 },
+  { no: 110, name: 'An-Nasr', ayat: 3 },
+  { no: 111, name: 'Al-Masad', ayat: 5 },
+  { no: 112, name: 'Al-Ikhlas', ayat: 4 },
+  { no: 113, name: 'Al-Falaq', ayat: 5 },
+  { no: 114, name: 'An-Nas', ayat: 6 },
+];
+
 interface Student {
   id: string;
   name: string;
@@ -102,7 +220,7 @@ export default function GuruTahfidzPage() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [selectedStudentId, setSelectedStudentId] = useState('');
   const [category, setCategory] = useState<'ziyadah' | 'sabqi' | 'manzil' | 'murajaah'>('ziyadah');
-  const [surahName, setSurahName] = useState('An-Naba');
+  const [surahName, setSurahName] = useState('Al-Fatihah');
   const [isCustomSurah, setIsCustomSurah] = useState(false);
   const [customSurahName, setCustomSurahName] = useState('');
   const [startAyat, setStartAyat] = useState('');
@@ -214,6 +332,12 @@ export default function GuruTahfidzPage() {
     const matchesCategory = categoryFilter === 'all' || r.category === categoryFilter;
     return matchesSearch && matchesCategory;
   });
+
+  // Pagination states
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [visibleCount, setVisibleCount] = useState(5);
+
+  const displayedRecords = filteredRecords.slice(0, visibleCount);
 
   return (
     <DashboardLayout activeMenu="tahfidz">
@@ -346,22 +470,15 @@ export default function GuruTahfidzPage() {
                       className="form-control" 
                       value={surahName}
                       onChange={e => {
-                        if (e.target.value === 'custom') {
-                          setIsCustomSurah(true);
-                        } else {
-                          setSurahName(e.target.value);
-                        }
+                        setSurahName(e.target.value);
                       }}
                       style={{ flex: 1 }}
                     >
-                      <option value="An-Naba">An-Naba (40 ayat)</option>
-                      <option value="An-Nazi'at">An-Nazi&apos;at (46 ayat)</option>
-                      <option value="Al-Mulk">Al-Mulk (30 ayat)</option>
-                      <option value="Yasin">Yasin (83 ayat)</option>
-                      <option value="Al-Kahfi">Al-Kahfi (110 ayat)</option>
-                      <option value="Al-Baqarah">Al-Baqarah (286 ayat)</option>
-                      <option value="Al-Waqi'ah">Al-Waqi&apos;ah (96 ayat)</option>
-                      <option value="custom">-- Surah Lain (Ketik Manual) --</option>
+                      {SURAH_LIST.map(s => (
+                        <option key={s.no} value={s.name}>
+                          {s.no}. {s.name} ({s.ayat} ayat)
+                        </option>
+                      ))}
                     </select>
                   ) : (
                     <div style={{ display: 'flex', gap: 'var(--spacing-2)', flex: 1 }}>
@@ -583,7 +700,7 @@ export default function GuruTahfidzPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredRecords.map((r) => {
+                  {displayedRecords.map((r) => {
                     const catInfo = CATEGORY_INFO[r.category as keyof typeof CATEGORY_INFO] || {
                       label: r.category,
                       badgeClass: 'bg-neutral-100 text-neutral-800 border-neutral-200'
@@ -638,6 +755,82 @@ export default function GuruTahfidzPage() {
               </table>
             )}
           </div>
+
+          {/* Pagination Controls */}
+          {!loading && filteredRecords.length > 0 && (
+            <div style={{
+              padding: '16px 24px',
+              borderTop: '1px solid rgba(0, 0, 0, 0.05)',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '12px',
+              backgroundColor: '#f8fafc'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '0.8rem', color: '#64748b' }}>Tampilkan</span>
+                <select
+                  value={itemsPerPage}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value);
+                    setItemsPerPage(val);
+                    setVisibleCount(val);
+                  }}
+                  style={{
+                    padding: '4px 8px',
+                    borderRadius: '6px',
+                    border: '1px solid #e2e8f0',
+                    fontSize: '0.8rem',
+                    fontWeight: 600,
+                    color: '#0f172a',
+                    background: '#ffffff',
+                    outline: 'none',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <option value={5}>5</option>
+                  <option value={10}>10</option>
+                  <option value={25}>25</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
+                </select>
+                <span style={{ fontSize: '0.8rem', color: '#64748b' }}>
+                  data dari total {filteredRecords.length} setoran
+                </span>
+              </div>
+
+              {visibleCount < filteredRecords.length && (
+                <button
+                  onClick={() => setVisibleCount(prev => prev + itemsPerPage)}
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    background: '#ffffff',
+                    border: '1px solid #e2e8f0',
+                    color: '#4f46e5',
+                    fontSize: '0.8rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#4f46e5';
+                    e.currentTarget.style.color = '#ffffff';
+                    e.currentTarget.style.borderColor = '#4f46e5';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = '#ffffff';
+                    e.currentTarget.style.color = '#4f46e5';
+                    e.currentTarget.style.borderColor = '#e2e8f0';
+                  }}
+                >
+                  Tampilkan Lebih Banyak
+                </button>
+              )}
+            </div>
+          )}
         </section>
 
       </div>
