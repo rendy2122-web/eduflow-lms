@@ -33,6 +33,13 @@ export async function GET(req: NextRequest) {
             }
           }
         } : false,
+        homeroom_teacher: {
+          select: {
+            id: true,
+            nama: true,
+            email: true
+          }
+        },
         profiles: {
           select: {
             id: true,

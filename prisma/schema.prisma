@@ -30,6 +30,7 @@ model User {
   // Relasi Tahfidz ganda (sebagai penyimak/guru, dan sebagai penghafal/siswa)
   tahfidzRecordsStudent TahfidzRecord[] @relation("StudentTahfidz")
   tahfidzRecordsTeacher TahfidzRecord[] @relation("TeacherTahfidz")
+  homeroomClasses   Class[]
   teachingSchedules TeachingSchedule[]
 }
 
@@ -57,12 +58,14 @@ model Profile {
 
 // 3. Kelas Belajar
 model Class {
-  id          String    @id @default(uuid())
-  name        String    @unique
-  description String?
-  profiles    Profile[]
-  subjects    Subject[]
-  teachingSchedules TeachingSchedule[]
+  id                  String    @id @default(uuid())
+  name                String    @unique
+  description         String?
+  homeroom_teacher_id String?
+  homeroom_teacher    User?     @relation(fields: [homeroom_teacher_id], references: [id], onDelete: SetNull)
+  profiles            Profile[]
+  subjects            Subject[]
+  teachingSchedules   TeachingSchedule[]
 }
 
 // 4. Mata Pelajaran

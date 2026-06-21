@@ -9,6 +9,11 @@ interface Class {
   description: string;
   subjects: any[];
   profiles: any[];
+  homeroom_teacher?: {
+    id: string;
+    nama: string;
+    email: string;
+  } | null;
   _count: {
     subjects: number;
     profiles: number;
@@ -524,53 +529,51 @@ export default function AdminClassesPage() {
                 </div>
 
                 {/* Homeroom Teacher */}
-                {cls.profiles && cls.profiles.length > 0 && (
+                <div style={{
+                  marginTop: '12px',
+                  paddingTop: '12px',
+                  borderTop: '1px solid #f1f5f9',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}>
                   <div style={{
-                    marginTop: '12px',
-                    paddingTop: '12px',
-                    borderTop: '1px solid #f1f5f9',
+                    width: '24px',
+                    height: '24px',
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #f59e0b, #fbbf24)',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '8px'
+                    justifyContent: 'center',
+                    color: '#ffffff',
+                    fontSize: '0.7rem',
+                    fontWeight: 700,
+                    flexShrink: 0
                   }}>
-                    <div style={{
-                      width: '24px',
-                      height: '24px',
-                      borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #f59e0b, #fbbf24)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: '#ffffff',
-                      fontSize: '0.7rem',
-                      fontWeight: 700,
-                      flexShrink: 0
-                    }}>
-                      👨‍🏫
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{
-                        fontSize: '0.68rem',
-                        color: '#64748b',
-                        fontWeight: 600,
-                        margin: '0 0 2px 0'
-                      }}>
-                        Wali Kelas
-                      </p>
-                      <p style={{
-                        fontSize: '0.8rem',
-                        fontWeight: 700,
-                        color: '#0f172a',
-                        margin: 0,
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap'
-                      }}>
-                        {cls.profiles[0]?.user?.nama || 'Belum ditugaskan'}
-                      </p>
-                    </div>
+                    👨‍🏫
                   </div>
-                )}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{
+                      fontSize: '0.68rem',
+                      color: '#64748b',
+                      fontWeight: 600,
+                      margin: '0 0 2px 0'
+                    }}>
+                      Wali Kelas
+                    </p>
+                    <p style={{
+                      fontSize: '0.8rem',
+                      fontWeight: 700,
+                      color: '#0f172a',
+                      margin: 0,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap'
+                    }}>
+                      {cls.homeroom_teacher?.nama || 'Belum ditugaskan'}
+                    </p>
+                  </div>
+                </div>
 
                 {/* View Details Button */}
                 <button

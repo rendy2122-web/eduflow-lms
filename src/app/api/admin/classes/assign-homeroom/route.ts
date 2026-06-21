@@ -26,12 +26,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Update all profiles in this class to set the homeroom teacher
-    // For now, we'll just update the profile's parent_id field to store the homeroom teacher
-    // In a more complex system, you might have a separate HomeroomAssignment table
-    
-    // For simplicity, we'll just return success
-    // The actual assignment logic can be implemented based on your needs
+    // Update Class model directly with homeroom_teacher_id
+    await prisma.class.update({
+      where: { id: classId },
+      data: { homeroom_teacher_id: teacherId }
+    });
     
     return NextResponse.json({
       success: true,
